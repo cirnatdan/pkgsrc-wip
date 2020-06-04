@@ -55,32 +55,32 @@ RCD_SCRIPTS=		gdm
 
 .include "../../mk/bsd.prefs.mk"
 
-SUBST_CLASSES+=		desktop
-SUBST_MESSAGE.desktop=	Configuring GDM settings.
-SUBST_STAGE.desktop=	pre-configure
-SUBST_FILES.desktop=	config/default.desktop.in
+#SUBST_CLASSES+=		desktop
+#SUBST_MESSAGE.desktop=	Configuring GDM settings.
+#SUBST_STAGE.desktop=	pre-configure
+#SUBST_FILES.desktop=	config/default.desktop.in
 #SUBST_FILES.desktop+=	config/gnome.desktop.in
-SUBST_FILES.desktop+=	config/gdm.conf.in
-SUBST_SED.desktop=	-e 's/^_//g'
-SUBST_SED.desktop+=	-e 's|^User=gdm$$|User=${GDMOWN}|g'
-SUBST_SED.desktop+=	-e 's|^Group=gdm$$|Group=${GDMGRP}|g'
-SUBST_SED.desktop+=	-e 's|^\#GtkTheme=.*$$|GtkTheme=Clearlooks|g'
-SUBST_SED.desktop+=	-e 's|^\#FirstVT=.*$$|FirstVT=5|g'
-SUBST_SED.desktop+=	-e 's|^\#VTAllocation=.*$$|VTAllocation=true|g'
-.if ${OPSYS} == "NetBSD"
-SUBST_SED.desktop+=	-e 's|^\#Logo=.*$$|Logo=${PREFIX}/share/pixmaps/NetBSD.xpm|g'
-.endif
-.if ${OPSYS} == "NetBSD" || ${OPSYS} == "OpenBSD"
-SUBST_SED.desktop+=	-e 's|^\#RebootCommand=.*$$|RebootCommand=/sbin/shutdown -r now|g'
-SUBST_SED.desktop+=	-e 's|^\#HaltCommand=.*$$|HaltCommand=/sbin/shutdown -p now|g'
-.endif
-SUBST_SED.desktop+=	-e 's|^PreFetchProgram=.*$$|PreFetchProgram=${PREFIX}/libexec/gdmprefetch @${PKG_SYSCONFDIR}/gdmprefetchlist|g'
+#SUBST_FILES.desktop+=	config/gdm.conf.in
+#SUBST_SED.desktop=	-e 's/^_//g'
+#SUBST_SED.desktop+=	-e 's|^User=gdm$$|User=${GDMOWN}|g'
+#SUBST_SED.desktop+=	-e 's|^Group=gdm$$|Group=${GDMGRP}|g'
+#SUBST_SED.desktop+=	-e 's|^\#GtkTheme=.*$$|GtkTheme=Clearlooks|g'
+#SUBST_SED.desktop+=	-e 's|^\#FirstVT=.*$$|FirstVT=5|g'
+#SUBST_SED.desktop+=	-e 's|^\#VTAllocation=.*$$|VTAllocation=true|g'
+#.if ${OPSYS} == "NetBSD"
+#SUBST_SED.desktop+=	-e 's|^\#Logo=.*$$|Logo=${PREFIX}/share/pixmaps/NetBSD.xpm|g'
+#.endif
+#.if ${OPSYS} == "NetBSD" || ${OPSYS} == "OpenBSD"
+#SUBST_SED.desktop+=	-e 's|^\#RebootCommand=.*$$|RebootCommand=/sbin/shutdown -r now|g'
+#SUBST_SED.desktop+=	-e 's|^\#HaltCommand=.*$$|HaltCommand=/sbin/shutdown -p now|g'
+#.endif
+#SUBST_SED.desktop+=	-e 's|^PreFetchProgram=.*$$|PreFetchProgram=${PREFIX}/libexec/gdmprefetch @${PKG_SYSCONFDIR}/gdmprefetchlist|g'
 
-SUBST_CLASSES+=		gdmsetup
-SUBST_MESSAGE.gdmsetup=	Patching gdmsetup theme installer to use ${REAL_ROOT_USER}:${REAL_ROOT_GROUP}
-SUBST_STAGE.gdmsetup=	post-patch
-SUBST_FILES.gdmsetup=	gui/gdmsetup.c
-SUBST_SED.gdmsetup=	-e 's/root:root/${REAL_ROOT_USER}:${REAL_ROOT_GROUP}/g'
+#SUBST_CLASSES+=		gdmsetup
+#SUBST_MESSAGE.gdmsetup=	Patching gdmsetup theme installer to use ${REAL_ROOT_USER}:${REAL_ROOT_GROUP}
+#SUBST_STAGE.gdmsetup=	post-patch
+#SUBST_FILES.gdmsetup=	gui/gdmsetup.c
+#SUBST_SED.gdmsetup=	-e 's/root:root/${REAL_ROOT_USER}:${REAL_ROOT_GROUP}/g'
 
 .if ${OPSYS} == "SunOS"
 CFLAGS+=	-DSunOS
@@ -124,7 +124,7 @@ PRINT_PLIST_AWK+=	/gdmopen/ { print "$${GDMOPEN}" $$0; next }
 pre-configure:
 	sed -i -e 's,/usr/local,${PREFIX},g' \
 		-e 's,/bin/bash,/bin/sh,g' \
-		${WRKSRC}/daemon/gdm-session-worker.c &&
+		${WRKSRC}/daemon/gdm-session-worker.c && \
 	cd ${WRKSRC}; \
 		./autogen.sh; \
 		autoreconf -fiv; \
