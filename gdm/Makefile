@@ -15,7 +15,7 @@ DEPENDS+=	zenity>=2.16.0:../../wip/zenity
 USE_PKGLOCALEDIR=	YES
 GNU_CONFIGURE=		YES
 USE_LIBTOOL=		YES
-USE_TOOLS+=		gmake intltool msgfmt pkg-config
+USE_TOOLS+=		gmake msgfmt pkg-config
 USE_TOOLS+=		automake autoconf autoreconf
 BUILD_DEFS+=		VARBASE
 
@@ -31,8 +31,11 @@ CONFIGURE_ARGS+=	--with-prefetch=yes
 CONFIGURE_ARGS+=	--without-plymouth
 CONFIGURE_ARGS+=	--without-systemd
 CONFIGURE_ARGS+=	--disable-systemd-journal
+CONFIGURE_ARGS+=	--disable-wayland-support
+CONFIGURE_ARGS+=	--disable-user-display-server
 CONFIGURE_ENV+=		PREFIX=${PREFIX}
 CONFIGURE_ENV+=		X11BASE=${X11BASE}
+CONFIGURE_SCRIPT=	./autogen.sh
 INSTALL_MAKE_FLAGS+=	${MAKE_FLAGS}
 INSTALL_MAKE_FLAGS+=	GDM_CUSTOM_CONF=${EGDIR}/custom.conf
 INSTALL_MAKE_FLAGS+=	sysconfdir=${EGDIR}
@@ -121,14 +124,6 @@ PLIST.gdmopen=		yes
 .endif
 PRINT_PLIST_AWK+=	/gdmopen/ { print "$${GDMOPEN}" $$0; next }
 
-pre-configure:
-	sed -i -e 's,/usr/local,${PREFIX},g' \
-		-e 's,/bin/bash,/bin/sh,g' \
-		${WRKSRC}/daemon/gdm-session-worker.c && \
-	cd ${WRKSRC}; \
-		./autogen.sh; \
-		autoreconf -fiv; \
-		intltoolize
 post-install:
 	${INSTALL_DATA} ${FILESDIR}/NetBSD.xpm ${DESTDIR}${PREFIX}/share/pixmaps
 	${INSTALL_DATA} ${FILESDIR}/custom.desktop \
