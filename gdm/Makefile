@@ -31,7 +31,6 @@ CONFIGURE_ARGS+=	--with-prefetch=yes
 CONFIGURE_ARGS+=	--without-plymouth
 CONFIGURE_ARGS+=	--without-systemd
 CONFIGURE_ARGS+=	--disable-systemd-journal
-CONFIGURE_ARGS+=	--disable-wayland-support
 CONFIGURE_ARGS+=	--disable-user-display-server
 CONFIGURE_ENV+=		PREFIX=${PREFIX}
 CONFIGURE_ENV+=		X11BASE=${X11BASE}
@@ -125,6 +124,7 @@ PLIST.gdmopen=		yes
 PRINT_PLIST_AWK+=	/gdmopen/ { print "$${GDMOPEN}" $$0; next }
 
 post-install:
+	${INSTALL_DATA_DIR} ${DESTDIR}${PREFIX}/share/pixmaps
 	${INSTALL_DATA} ${FILESDIR}/NetBSD.xpm ${DESTDIR}${PREFIX}/share/pixmaps
 	${INSTALL_DATA} ${FILESDIR}/custom.desktop \
 		${DESTDIR}${PREFIX}/share/gdm/BuiltInSessions
@@ -147,5 +147,4 @@ BUILDLINK_API_DEPENDS.libart+=	libart>=2.3.11
 .include "../../textproc/gnome-doc-utils/buildlink3.mk"
 .include "../../textproc/libxml2/buildlink3.mk"
 .include "../../mk/omf-scrollkeeper.mk"
-.include "../../x11/gtk2/buildlink3.mk"
 .include "../../mk/bsd.pkg.mk"
