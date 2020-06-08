@@ -1,5 +1,4 @@
 # $NetBSD: Makefile,v 1.6 2015/06/06 20:44:44 krytarowski Exp $
-#
 
 DISTNAME=	gdm-3.36.2
 CATEGORIES=	x11 gnome
@@ -51,38 +50,11 @@ OWN_DIRS+=		${VARBASE}/log/gdm
 
 PKG_SYSCONFSUBDIR=	gdm
 EGDIR=			${PREFIX}/share/examples/gdm
-CONF_FILES=		${EGDIR}/custom.conf ${PKG_SYSCONFDIR}/data/custom.conf
+CONF_FILES=		${EGDIR}/custom.conf ${PKG_SYSCONFDIR}/custom.conf
 
 RCD_SCRIPTS=		gdm
 
 .include "../../mk/bsd.prefs.mk"
-
-#SUBST_CLASSES+=		desktop
-#SUBST_MESSAGE.desktop=	Configuring GDM settings.
-#SUBST_STAGE.desktop=	pre-configure
-#SUBST_FILES.desktop=	config/default.desktop.in
-#SUBST_FILES.desktop+=	config/gnome.desktop.in
-#SUBST_FILES.desktop+=	config/gdm.conf.in
-#SUBST_SED.desktop=	-e 's/^_//g'
-#SUBST_SED.desktop+=	-e 's|^User=gdm$$|User=${GDMOWN}|g'
-#SUBST_SED.desktop+=	-e 's|^Group=gdm$$|Group=${GDMGRP}|g'
-#SUBST_SED.desktop+=	-e 's|^\#GtkTheme=.*$$|GtkTheme=Clearlooks|g'
-#SUBST_SED.desktop+=	-e 's|^\#FirstVT=.*$$|FirstVT=5|g'
-#SUBST_SED.desktop+=	-e 's|^\#VTAllocation=.*$$|VTAllocation=true|g'
-#.if ${OPSYS} == "NetBSD"
-#SUBST_SED.desktop+=	-e 's|^\#Logo=.*$$|Logo=${PREFIX}/share/pixmaps/NetBSD.xpm|g'
-#.endif
-#.if ${OPSYS} == "NetBSD" || ${OPSYS} == "OpenBSD"
-#SUBST_SED.desktop+=	-e 's|^\#RebootCommand=.*$$|RebootCommand=/sbin/shutdown -r now|g'
-#SUBST_SED.desktop+=	-e 's|^\#HaltCommand=.*$$|HaltCommand=/sbin/shutdown -p now|g'
-#.endif
-#SUBST_SED.desktop+=	-e 's|^PreFetchProgram=.*$$|PreFetchProgram=${PREFIX}/libexec/gdmprefetch @${PKG_SYSCONFDIR}/gdmprefetchlist|g'
-
-#SUBST_CLASSES+=		gdmsetup
-#SUBST_MESSAGE.gdmsetup=	Patching gdmsetup theme installer to use ${REAL_ROOT_USER}:${REAL_ROOT_GROUP}
-#SUBST_STAGE.gdmsetup=	post-patch
-#SUBST_FILES.gdmsetup=	gui/gdmsetup.c
-#SUBST_SED.gdmsetup=	-e 's/root:root/${REAL_ROOT_USER}:${REAL_ROOT_GROUP}/g'
 
 .if ${OPSYS} == "SunOS"
 CFLAGS+=	-DSunOS
@@ -126,8 +98,10 @@ PRINT_PLIST_AWK+=	/gdmopen/ { print "$${GDMOPEN}" $$0; next }
 post-install:
 	${INSTALL_DATA_DIR} ${DESTDIR}${PREFIX}/share/pixmaps
 	${INSTALL_DATA} ${FILESDIR}/NetBSD.xpm ${DESTDIR}${PREFIX}/share/pixmaps
+	${INSTALL_DATA_DIR} ${DESTDIR}${PREFIX}/share/gdm/BuiltInSessions
 	${INSTALL_DATA} ${FILESDIR}/custom.desktop \
 		${DESTDIR}${PREFIX}/share/gdm/BuiltInSessions
+
 
 .include "../../audio/libcanberra/buildlink3.mk"
 .include "../../textproc/iso-codes/buildlink3.mk"
@@ -135,14 +109,6 @@ post-install:
 .include "../../wip/accountsservice/buildlink3.mk"
 .include "../../devel/gettext-lib/buildlink3.mk"
 .include "../../devel/glib2/buildlink3.mk"
-.include "../../devel/pango/buildlink3.mk"
-.include "../../graphics/hicolor-icon-theme/buildlink3.mk"
-BUILDLINK_API_DEPENDS.libart+=	libart>=2.3.11
-.include "../../graphics/libart/buildlink3.mk"
-.include "../../graphics/libgnomecanvas/buildlink3.mk"
-.include "../../graphics/librsvg/buildlink3.mk"
 .include "../../security/tcp_wrappers/buildlink3.mk"
-.include "../../textproc/gnome-doc-utils/buildlink3.mk"
-.include "../../textproc/libxml2/buildlink3.mk"
 .include "../../mk/omf-scrollkeeper.mk"
 .include "../../mk/bsd.pkg.mk"
