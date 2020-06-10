@@ -31,7 +31,7 @@ Date: Fri, 12 Jun 2015 13:48:52 -0400
 Subject: require logind support
 
 Index: daemon/gdm-manager.c
---- daemon/gdm-manager.c.orig
+--- daemon/gdm-manager.c.orig	2020-05-04 20:11:25.000000000 +0000
 +++ daemon/gdm-manager.c
 @@ -36,7 +36,9 @@
  
@@ -81,7 +81,7 @@ Index: daemon/gdm-manager.c
          }
  }
 +#endif
- 
++
 +#ifdef WITH_CONSOLE_KIT
 +static char *
 +get_session_id_for_pid_consolekit (GDBusConnection  *connection,
@@ -129,7 +129,7 @@ Index: daemon/gdm-manager.c
 +
 +        return NULL;
 +}
-+
+ 
 +#ifdef WITH_SYSTEMD
  static gboolean
 -get_uid_for_session_id (const char  *session_id,
@@ -141,14 +141,14 @@ Index: daemon/gdm-manager.c
  {
          int ret;
  
-@@ -253,8 +315,62 @@ get_uid_for_session_id (const char  *session_id,
+@@ -253,6 +315,60 @@ get_uid_for_session_id (const char  *ses
  
          return TRUE;
  }
 +#endif
- 
++
 +#ifdef WITH_CONSOLE_KIT
- static gboolean
++static gboolean
 +get_uid_for_consolekit_session_id (GDBusConnection  *connection,
 +                                   const char       *session_id,
 +                                   uid_t            *out_uid,
@@ -199,12 +199,10 @@ Index: daemon/gdm-manager.c
 +
 +        return FALSE;
 +}
-+
-+static gboolean
+ 
+ static gboolean
  lookup_by_session_id (const char *id,
-                       GdmDisplay *display,
-                       gpointer    user_data)
-@@ -266,11 +382,51 @@ lookup_by_session_id (const char *id,
+@@ -266,10 +382,50 @@ lookup_by_session_id (const char *id,
          return g_strcmp0 (current, looking_for) == 0;
  }
  
@@ -217,7 +215,7 @@ Index: daemon/gdm-manager.c
 +                             GDBusConnection  *connection,
 +                             const char       *session_id,
 +                             GError          **error)
- {
++{
 +        GVariant *reply;
 +        char *session_type = NULL;
 +
@@ -255,10 +253,9 @@ Index: daemon/gdm-manager.c
 +is_systemd_login_session (GdmManager  *self,
 +                          const char  *session_id,
 +                          GError     **error)
-+{
+ {
          char *session_class = NULL;
          int ret;
- 
 @@ -294,29 +450,49 @@ is_login_session (GdmManager  *self,
          g_free (session_class);
          return TRUE;
@@ -272,7 +269,7 @@ Index: daemon/gdm-manager.c
 +                  GDBusConnection  *connection,
 +                  const char       *session_id,
 +                  GError          **error)
- {
++{
 +#ifdef WITH_SYSTEMD
 +        if (LOGIND_RUNNING()) {
 +                return is_systemd_login_session (self, session_id, error);
@@ -291,7 +288,7 @@ Index: daemon/gdm-manager.c
 +activate_session_id_for_systemd (GdmManager   *manager,
 +                                 const char *seat_id,
 +                                 const char *session_id)
-+{
+ {
          GError *error = NULL;
          GVariant *reply;
  
@@ -316,12 +313,12 @@ Index: daemon/gdm-manager.c
                           g_dbus_error_get_remote_error (error), error->message);
                  g_error_free (error);
                  return FALSE;
-@@ -326,7 +502,119 @@ session_unlock (GdmManager *manager,
+@@ -326,6 +502,118 @@ session_unlock (GdmManager *manager,
  
          return TRUE;
  }
 +#endif
- 
++
 +#ifdef WITH_CONSOLE_KIT
 +static gboolean
 +activate_session_id_for_ck (GdmManager *manager,
@@ -432,24 +429,20 @@ Index: daemon/gdm-manager.c
 +        return TRUE;
 +#endif
 +}
-+
+ 
  static GdmSession *
  find_session_for_user_on_seat (GdmManager *manager,
-                                const char *username,
-@@ -374,11 +662,44 @@ find_session_for_user_on_seat (GdmManager *manager,
+@@ -374,10 +662,43 @@ find_session_for_user_on_seat (GdmManage
          return NULL;
  }
  
 +#ifdef WITH_CONSOLE_KIT
- static gboolean
--is_remote_session (GdmManager  *self,
--                   const char  *session_id,
--                   GError     **error)
++static gboolean
 +is_consolekit_remote_session (GdmManager       *self,
 +                             GDBusConnection  *connection,
 +                             const char       *session_id,
 +                             GError          **error)
- {
++{
 +        GVariant *reply;
 +        gboolean is_remote;
 +
@@ -476,14 +469,16 @@ Index: daemon/gdm-manager.c
 +#endif
 +
 +#ifdef WITH_SYSTEMD
-+static gboolean
+ static gboolean
+-is_remote_session (GdmManager  *self,
+-                   const char  *session_id,
+-                   GError     **error)
 +is_systemd_remote_session (GdmManager  *self,
 +                           const char  *session_id,
 +                           GError     **error)
-+{
+ {
          char *seat;
          int ret;
-         gboolean is_remote;
 @@ -403,10 +724,12 @@ is_remote_session (GdmManager  *self,
  
          return is_remote;
@@ -499,12 +494,12 @@ Index: daemon/gdm-manager.c
  {
          int ret;
          char *seat, *out_seat;
-@@ -431,11 +754,85 @@ get_seat_id_for_session_id (const char  *session_id,
+@@ -431,11 +754,85 @@ get_seat_id_for_session_id (const char  
  
          return out_seat;
  }
 +#endif
- 
++
 +static gboolean
 +is_remote_session (GdmManager       *self,
 +                  GDBusConnection  *connection,
@@ -516,7 +511,7 @@ Index: daemon/gdm-manager.c
 +                return is_systemd_remote_session (self, session_id, error);
 +        }
 +#endif
-+
+ 
 +#ifdef WITH_CONSOLE_KIT
 +        return is_consolekit_remote_session (self, connection, session_id, error);
 +#endif
@@ -531,7 +526,7 @@ Index: daemon/gdm-manager.c
 +get_seat_id_for_consolekit_session_id (GDBusConnection  *connection,
 +                                       const char       *session_id,
 +                                       GError          **error)
- {
++{
 +        GVariant *reply;
 +        char *retval;
 +
@@ -579,7 +574,7 @@ Index: daemon/gdm-manager.c
 +static char *
 +get_tty_for_systemd_session_id (const char  *session_id,
 +                                GError     **error)
-+{
+ {
 +
 +
 +
@@ -587,12 +582,12 @@ Index: daemon/gdm-manager.c
          int ret;
          char *tty, *out_tty;
  
-@@ -458,7 +855,21 @@ get_tty_for_session_id (const char  *session_id,
+@@ -458,6 +855,20 @@ get_tty_for_session_id (const char  *ses
  
          return out_tty;
  }
 +#endif
- 
++
 +static char *
 +get_tty_for_session_id (const char  *session_id,
 +                        GError     **error)
@@ -605,11 +600,10 @@ Index: daemon/gdm-manager.c
 +
 +        return NULL;
 +}
-+
+ 
  static void
  get_display_and_details_for_bus_sender (GdmManager       *self,
-                                         GDBusConnection  *connection,
-@@ -501,11 +912,10 @@ get_display_and_details_for_bus_sender (GdmManager    
+@@ -501,11 +912,10 @@ get_display_and_details_for_bus_sender (
                  goto out;
          }
  
@@ -624,7 +618,7 @@ Index: daemon/gdm-manager.c
                           error->message);
                  g_error_free (error);
                  goto out;
-@@ -516,7 +926,7 @@ get_display_and_details_for_bus_sender (GdmManager    
+@@ -516,7 +926,7 @@ get_display_and_details_for_bus_sender (
          }
  
          if (out_is_login_screen != NULL) {
@@ -633,7 +627,7 @@ Index: daemon/gdm-manager.c
  
                  if (error != NULL) {
                          g_debug ("GdmManager: Error while checking if sender is login screen: %s",
-@@ -526,7 +936,7 @@ get_display_and_details_for_bus_sender (GdmManager    
+@@ -526,7 +936,7 @@ get_display_and_details_for_bus_sender (
                  }
          }
  
@@ -642,7 +636,7 @@ Index: daemon/gdm-manager.c
                  g_debug ("GdmManager: Error while retrieving uid for session: %s",
                           error->message);
                  g_error_free (error);
-@@ -543,7 +953,7 @@ get_display_and_details_for_bus_sender (GdmManager    
+@@ -543,7 +953,7 @@ get_display_and_details_for_bus_sender (
          }
  
          if (out_seat_id != NULL) {
@@ -651,7 +645,7 @@ Index: daemon/gdm-manager.c
  
                  if (error != NULL) {
                          g_debug ("GdmManager: Error while retrieving seat id for session: %s",
-@@ -553,7 +963,7 @@ get_display_and_details_for_bus_sender (GdmManager    
+@@ -553,7 +963,7 @@ get_display_and_details_for_bus_sender (
          }
  
          if (out_is_remote != NULL) {
@@ -660,7 +654,7 @@ Index: daemon/gdm-manager.c
  
                  if (error != NULL) {
                          g_debug ("GdmManager: Error while retrieving remoteness for session: %s",
-@@ -609,7 +1019,7 @@ switch_to_compatible_user_session (GdmManager *manager
+@@ -609,7 +1019,7 @@ switch_to_compatible_user_session (GdmMa
          if (existing_session != NULL) {
                  ssid_to_activate = gdm_session_get_session_id (existing_session);
                  if (seat_id != NULL) {
@@ -699,7 +693,7 @@ Index: daemon/gdm-manager.c
  static gboolean
  gdm_manager_handle_register_display (GdmDBusManager        *manager,
                                       GDBusMethodInvocation *invocation,
-@@ -773,7 +1160,7 @@ gdm_manager_handle_register_display (GdmDBusManager   
+@@ -773,7 +1160,7 @@ gdm_manager_handle_register_display (Gdm
                  }
          }
  
@@ -708,7 +702,7 @@ Index: daemon/gdm-manager.c
  
          if (session != NULL) {
                  GPid pid;
-@@ -980,7 +1367,8 @@ on_reauthentication_client_rejected (GdmSession       
+@@ -980,7 +1367,8 @@ on_reauthentication_client_rejected (Gdm
                   * same audit session, ignore it since it doesn't "own" the
                   * reauthentication session
                   */
@@ -723,29 +717,29 @@ Index: daemon/gdm-manager.c
  {
          gboolean is_on_seat0 = TRUE;
 -        char *seat_id = NULL;
- 
+-
 -        g_object_get (G_OBJECT (display), "seat-id", &seat_id, NULL);
+ 
+-        if (g_strcmp0 (seat_id, "seat0") != 0) {
+-            is_on_seat0 = FALSE;
+-        }
 +#ifdef WITH_SYSTEMD
 +        if (LOGIND_RUNNING()) {
 +                char *seat_id = NULL;
 +                g_object_get (G_OBJECT (display), "seat-id", &seat_id, NULL);
  
--        if (g_strcmp0 (seat_id, "seat0") != 0) {
--            is_on_seat0 = FALSE;
--        }
+-        g_free (seat_id);
 +                if (g_strcmp0 (seat_id, "seat0") != 0) {
 +                        is_on_seat0 = FALSE;
 +                }
  
--        g_free (seat_id);
--
 +                g_free (seat_id);
 +        }
 +#endif
          return is_on_seat0;
  }
  
-@@ -2031,11 +2422,57 @@ on_user_session_died (GdmSession *session,
+@@ -2031,11 +2422,57 @@ on_user_session_died (GdmSession *sessio
  }
  
  static char *
@@ -805,11 +799,10 @@ Index: daemon/gdm-manager.c
  }
  
  static void
-@@ -2044,25 +2481,6 @@ on_session_reauthenticated (GdmSession *session,
-                             GdmManager *manager)
+@@ -2045,25 +2482,6 @@ on_session_reauthenticated (GdmSession *
  {
          gboolean fail_if_already_switched = FALSE;
--
+ 
 -        if (gdm_session_get_display_mode (session) == GDM_SESSION_DISPLAY_MODE_REUSE_VT) {
 -                const char *seat_id;
 -                char *session_id;
@@ -828,6 +821,7 @@ Index: daemon/gdm-manager.c
 -                        g_free (session_id);
 -                }
 -        }
- 
+-
          /* There should already be a session running, so jump to its
           * VT. In the event we're already on the right VT, (i.e. user
+          * used an unlock screen instead of a user switched login screen),

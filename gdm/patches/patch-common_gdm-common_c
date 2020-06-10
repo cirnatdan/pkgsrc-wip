@@ -19,7 +19,7 @@ Date: Fri, 12 Jun 2015 13:28:01 -0400
 Subject: drop consolekit support
 
 Index: common/gdm-common.c
---- common/gdm-common.c.orig
+--- common/gdm-common.c.orig	2020-05-04 20:11:25.000000000 +0000
 +++ common/gdm-common.c
 @@ -36,12 +36,25 @@
  
@@ -47,7 +47,7 @@ Index: common/gdm-common.c
  G_DEFINE_QUARK (gdm-common-error, gdm_common_error);
  
  gboolean
-@@ -352,8 +365,87 @@ create_transient_display (GDBusConnection *connection,
+@@ -352,8 +365,87 @@ create_transient_display (GDBusConnectio
          return TRUE;
  }
  
@@ -136,7 +136,7 @@ Index: common/gdm-common.c
                              const char      *seat_id,
                              const char      *session_id)
  {
-@@ -361,6 +453,217 @@ gdm_activate_session_by_id (GDBusConnection *connectio
+@@ -361,6 +453,217 @@ gdm_activate_session_by_id (GDBusConnect
          GVariant *reply;
  
          reply = g_dbus_connection_call_sync (connection,
@@ -354,7 +354,7 @@ Index: common/gdm-common.c
                                               "org.freedesktop.login1",
                                               "/org/freedesktop/login1",
                                               "org.freedesktop.login1.Manager",
-@@ -382,8 +685,8 @@ gdm_activate_session_by_id (GDBusConnection *connectio
+@@ -382,8 +685,8 @@ gdm_activate_session_by_id (GDBusConnect
  }
  
  gboolean
@@ -383,7 +383,7 @@ Index: common/gdm-common.c
  
          ret = FALSE;
          session_id = NULL;
-@@ -497,8 +799,10 @@ goto_login_session (GDBusConnection  *connection,
+@@ -497,8 +799,10 @@ goto_login_session (GDBusConnection  *co
           * since the data allocated is from libsystemd-logind, which
           * does not use GLib's g_malloc (). */
  
@@ -396,7 +396,7 @@ Index: common/gdm-common.c
  
                  return FALSE;
          }
-@@ -530,9 +834,9 @@ goto_login_session (GDBusConnection  *connection,
+@@ -530,9 +834,9 @@ goto_login_session (GDBusConnection  *co
                  return FALSE;
          }
  
@@ -408,7 +408,7 @@ Index: common/gdm-common.c
  
                  if (res) {
                          ret = TRUE;
-@@ -551,6 +855,7 @@ goto_login_session (GDBusConnection  *connection,
+@@ -551,6 +855,7 @@ goto_login_session (GDBusConnection  *co
  
          return ret;
  }
@@ -435,11 +435,10 @@ Index: common/gdm-common.c
  }
  
  static void
-@@ -841,136 +1156,4 @@ gdm_shell_expand (const char *str,
-                 }
+@@ -842,135 +1157,3 @@ gdm_shell_expand (const char *str,
          }
          return g_string_free (s, FALSE);
--}
+ }
 -
 -static gboolean
 -_systemd_session_is_graphical (const char *session_id)
@@ -571,4 +570,4 @@ Index: common/gdm-common.c
 -        *out_session_id = g_strdup (local_session_id);
 -
 -        return TRUE;
- }
+-}

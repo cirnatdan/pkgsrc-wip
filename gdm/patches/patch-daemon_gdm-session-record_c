@@ -3,7 +3,7 @@ $OpenBSD: patch-daemon_gdm-session-record_c,v 1.11 2019/11/02 15:34:07 ajacoutot
 https://bugzilla.gnome.org/show_bug.cgi?id=722482
 
 Index: daemon/gdm-session-record.c
---- daemon/gdm-session-record.c.orig
+--- daemon/gdm-session-record.c.orig	2020-05-04 20:11:25.000000000 +0000
 +++ daemon/gdm-session-record.c
 @@ -33,6 +33,16 @@
  #include <utmp.h>
@@ -86,7 +86,7 @@ Index: daemon/gdm-session-record.c
 +static void
 +write_utmp_logout_manually (char *line)
 +{
-+#if defined(HAVE_GETTTYENT) && defined(HAVE_UTMP_H)
++#if defined(HAVE_GETTTYENT) && defined(HAVE_UTMP_H) && !defined(HAVE_GETUTXENT)
 +        int rval = 1;
 +        struct timeval tv;
 +        UTMP ut;
@@ -117,7 +117,7 @@ Index: daemon/gdm-session-record.c
  void
  gdm_session_record_login (GPid                  session_pid,
                            const char           *user_name,
-@@ -214,8 +305,9 @@ gdm_session_record_login (GPid                  sessio
+@@ -214,8 +305,9 @@ gdm_session_record_login (GPid          
          setutxent();
          pututxline (&session_record);
          endutxent();
@@ -129,7 +129,7 @@ Index: daemon/gdm-session-record.c
  #endif
  }
  
-@@ -259,8 +351,8 @@ gdm_session_record_logout (GPid                  sessi
+@@ -259,8 +351,8 @@ gdm_session_record_logout (GPid         
          setutxent();
          pututxline (&session_record);
          endutxent();

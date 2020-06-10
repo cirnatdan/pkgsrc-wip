@@ -4,14 +4,11 @@ bin/gdmflexiserver
 etc/gdm/dbus-1/system.d/gdm.conf
 include/gdm/gdm-client-glue.h
 include/gdm/gdm-client.h
-include/gdm/gdm-pam-extensions.h
 include/gdm/gdm-sessions.h
 include/gdm/gdm-user-switching.h
 lib/girepository-1.0/Gdm-1.0.typelib
 lib/libgdm.la
-lib/pkgconfig/gdm-pam-extensions.pc
 lib/pkgconfig/gdm.pc
-lib/security/pam_gdm.la
 libexec/gdm-disable-wayland
 libexec/gdm-host-chooser
 libexec/gdm-session-worker
@@ -25,12 +22,6 @@ share/examples/gdm/PostLogin/Default.sample
 share/examples/gdm/PostSession/Default
 share/examples/gdm/PreSession/Default
 share/examples/gdm/custom.conf
-share/examples/gdm/pam.d/gdm-autologin
-share/examples/gdm/pam.d/gdm-fingerprint
-share/examples/gdm/pam.d/gdm-launch-environment
-share/examples/gdm/pam.d/gdm-password
-share/examples/gdm/pam.d/gdm-pin
-share/examples/gdm/pam.d/gdm-smartcard
 share/gdm/BuiltInSessions/custom.desktop
 share/gdm/gdb-cmd
 share/gdm/gdm.schemas

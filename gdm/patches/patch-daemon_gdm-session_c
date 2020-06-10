@@ -13,9 +13,9 @@ Date: Fri, 12 Jun 2015 14:33:40 -0400
 Subject: session: drop session-type property
 
 Index: daemon/gdm-session.c
---- daemon/gdm-session.c.orig
+--- daemon/gdm-session.c.orig	2020-05-04 20:11:25.000000000 +0000
 +++ daemon/gdm-session.c
-@@ -3238,6 +3238,10 @@ gdm_session_bypasses_xsession (GdmSession *self)
+@@ -3238,6 +3238,10 @@ gdm_session_bypasses_xsession (GdmSessio
          g_return_val_if_fail (self != NULL, FALSE);
          g_return_val_if_fail (GDM_IS_SESSION (self), FALSE);
  
@@ -26,13 +26,10 @@ Index: daemon/gdm-session.c
  #ifdef ENABLE_WAYLAND_SUPPORT
          if (gdm_session_is_wayland_session (self)) {
                  bypasses_xsession = TRUE;
-@@ -3330,6 +3334,27 @@ gdm_session_select_program (GdmSession *self,
-         g_free (self->selected_program);
+@@ -3333,6 +3337,27 @@ gdm_session_select_program (GdmSession *
+ }
  
-         self->selected_program = g_strdup (text);
-+}
-+
-+void
+ void
 +gdm_session_select_session_type (GdmSession *self,
 +                                 const char *text)
 +{
@@ -51,6 +48,9 @@ Index: daemon/gdm-session.c
 +                                                       text,
 +                                                       NULL, NULL, NULL);
 +        }
- }
- 
- void
++}
++
++void
+ gdm_session_select_session (GdmSession *self,
+                             const char *text)
+ {

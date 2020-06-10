@@ -31,6 +31,8 @@ CONFIGURE_ARGS+=	--without-plymouth
 CONFIGURE_ARGS+=	--without-systemd
 CONFIGURE_ARGS+=	--disable-systemd-journal
 CONFIGURE_ARGS+=	--disable-user-display-server
+CONFIGURE_ARGS+=	--with-user=${GDMOWN}
+CONFIGURE_ARGS+=	--with-group=${GDMGRP}
 CONFIGURE_ENV+=		PREFIX=${PREFIX}
 CONFIGURE_ENV+=		X11BASE=${X11BASE}
 CONFIGURE_SCRIPT=	./autogen.sh
@@ -102,11 +104,13 @@ post-install:
 	${INSTALL_DATA} ${FILESDIR}/custom.desktop \
 		${DESTDIR}${PREFIX}/share/gdm/BuiltInSessions
 
-
+.include "../../sysutils/gsettings-desktop-schemas/buildlink3.mk"
+.include "../../security/openpam/buildlink3.mk"
+.include "../../devel/dconf/buildlink3.mk"
 .include "../../audio/libcanberra/buildlink3.mk"
 .include "../../textproc/iso-codes/buildlink3.mk"
 .include "../../x11/gtk3/buildlink3.mk"
-.include "../../wip/accountsservice/buildlink3.mk"
+.include "../../sysutils/accountsservice/buildlink3.mk"
 .include "../../devel/gettext-lib/buildlink3.mk"
 .include "../../devel/glib2/buildlink3.mk"
 .include "../../security/tcp_wrappers/buildlink3.mk"
