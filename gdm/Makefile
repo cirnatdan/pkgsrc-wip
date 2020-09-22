@@ -1,7 +1,6 @@
 # $NetBSD: Makefile,v 1.6 2015/06/06 20:44:44 krytarowski Exp $
 
-DISTNAME=	gdm-3.36.2
-PKGREVISION=	1
+DISTNAME=	gdm-3.38.0
 CATEGORIES=	x11 gnome
 MASTER_SITES=	${MASTER_SITE_GITHUB:=GNOME/}
 
@@ -10,7 +9,7 @@ HOMEPAGE=	https://www.gnome.org/
 COMMENT=	Gnome Display Manager
 LICENSE=	gnu-gpl-v2
 
-DEPENDS+=	zenity>=2.16.0:../../wip/zenity
+DEPENDS+=	zenity>=3.0:../../wip/zenity
 
 USE_PKGLOCALEDIR=	YES
 GNU_CONFIGURE=		YES
@@ -119,4 +118,6 @@ post-install:
 .include "../../devel/gettext-lib/buildlink3.mk"
 .include "../../devel/glib2/buildlink3.mk"
 .include "../../security/tcp_wrappers/buildlink3.mk"
+.include "../../mk/omf-scrollkeeper.mk"
+.include "../../devel/meson/build.mk"
 .include "../../mk/bsd.pkg.mk"

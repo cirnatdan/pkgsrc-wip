@@ -1,9 +1,9 @@
 $NetBSD: distinfo,v 1.5 2015/06/06 20:00:43 krytarowski Exp $
 
-SHA1 (gdm-3.36.2.tar.gz) = 3d6912431458e6972ef35093c10dc57b5f734aa5
-RMD160 (gdm-3.36.2.tar.gz) = 5920f54069a351f61e37ac013f0fed22ba899ced
-SHA512 (gdm-3.36.2.tar.gz) = f4ed10b13d0da938ec90f50e37d32dd16828ac514d6d034e4512a75649386b16698436cc6aef04298ccb4fc33491433971b18e5da76634d85fd58624efff65cc
-Size (gdm-3.36.2.tar.gz) = 1535203 bytes
+SHA1 (gdm-3.38.0.tar.gz) = 3ffccabc826a9712cbf7e4e27d96feb373756f6f
+RMD160 (gdm-3.38.0.tar.gz) = 13e146ecde45a2b62dba39dd4a301552a1e6812b
+SHA512 (gdm-3.38.0.tar.gz) = 27af94f2bf72c5f3074ac9eec3cabc33ad2bed0f64fe2b1881b817ff3b81772289afde39f00cc4b49c9b779a1d1ae560e640877c739fca3cf664c08a1f9544c0
+Size (gdm-3.38.0.tar.gz) = 1544817 bytes
 SHA1 (patch-Makefile.am) = 06b2d36d6fad1abb9405414c9f4e12ca11b409c4
 SHA1 (patch-common_gdm-address_c) = dbcf524882299d890103ed1d90b5d20af28cf667
 SHA1 (patch-common_gdm-common_c) = 347e9a527b22a79bfee6fd2e6f41f0e75e34cec2
